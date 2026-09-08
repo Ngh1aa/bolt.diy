@@ -32,12 +32,17 @@ function normalizeDuckDuckGoUrl(rawHref: string) {
   try {
     const parsed = new URL(rawHref, 'https://lite.duckduckgo.com');
 
-    if (parsed.hostname.endsWith('duckduckgo.com') && parsed.pathname.startsWith('/l/')) {
-      const target = parsed.searchParams.get('uddg');
+    if (parsed.hostname.endsWith('duckduckgo.com')) {
+      if (parsed.pathname.startsWith('/l/')) {
+        const target = parsed.searchParams.get('uddg');
 
-      if (target) {
-        return decodeURIComponent(target);
+        if (target) {
+          return decodeURIComponent(target);
+        }
       }
+
+      // Skip DuckDuckGo navigation/help links. We only want external references.
+      return '';
     }
 
     if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
